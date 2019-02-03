@@ -1,5 +1,38 @@
 <label class="btn btn-default">
-  <input type="file" (change)="selectFile($event)">
+  <input type="file" (change)="selectFile($event)" class="d-none" #fileInput>
 </label>
- 
-<button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload()">Upload</button>
+<div>
+    
+<button class="btn btn-primary" [disabled]="showSummary" (click)="triggerFileUpload()"><i class="fa fa-spinner fa-spin"[hidden]="!fileuploading"> </i>Upload file to S3</button>
+<button class="btn btn-warning float-right"  (click)="resetFileUpload()">Clear</button>
+
+<button class="btn btn-primary "  (click)="listAllFiles()"><i class="fa fa-spinner fa-spin"[hidden]="!listLoading"></i>
+  List All file in S3 Bucket </button>
+</div>
+<div *ngIf="showSummary">
+<ul class="list-group well">
+  <li class="list-group-item"><strong>File Name:</strong> &nbsp;{{fileName}} </li>
+  <li class="list-group-item"><strong>S3 URL:</strong> &nbsp;<a href="{{s3response.Location}}" class="btn btn-link" target="_blank">{{s3response.Location}}</a></li>
+  <li  class="list-group-item"><strong>Bucket Name:</strong> &nbsp; {{s3response.Bucket}} </li>
+  
+</ul>
+
+</div>
+
+<div *ngIf="listObjects">
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>File Name</th>
+      <th>File Size</th>
+   </tr></thead>
+  <tbody>
+    <tr *ngFor="let item of allfileslist">
+      <td>{{item.Key}}</td>
+      <td>{{item.Size}}</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
