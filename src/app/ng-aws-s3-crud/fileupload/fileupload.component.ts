@@ -21,7 +21,7 @@ export class FileuploadComponent implements OnInit {
   awsBucketForm: FormGroup;
 
 
-
+  locationUrl:"";
   s3url:string="";
   fileUploadStaus:string="";
   fileName:string="";
@@ -30,7 +30,7 @@ export class FileuploadComponent implements OnInit {
   listObjects=false;
   listLoading:boolean=false;
   fileuploading:boolean=false;
-  
+  serviceBucketName:string="";
 
 
   constructor() { }
@@ -68,7 +68,7 @@ export class FileuploadComponent implements OnInit {
     const AWSService = AWS;
     const file = fileInput.target.files[0];
     this.fileName=file.name;
-    
+    this.serviceBucketName=this.awsBucketForm.value.bucketName
   
     AWSService.config.update({
       region: this.awsBucketForm.value.awsRegion,
@@ -97,6 +97,8 @@ export class FileuploadComponent implements OnInit {
                     if (err) {
                     console.log(err, 'there was an error uploading your file');
                     }else{
+                    this.locationUrl=data.Location;
+                    this.serviceBucketName=data.Bucket;
                     this.s3response=data;
             }
       });

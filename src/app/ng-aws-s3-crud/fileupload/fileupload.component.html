@@ -32,8 +32,8 @@
 <div *ngIf="showSummary">
 <ul class="list-group well">
   <li class="list-group-item"><strong>File Name:</strong> &nbsp;{{fileName}} </li>
-  <li class="list-group-item"><strong>S3 URL:</strong> &nbsp;<a href="{{s3response.Location}}" class="btn btn-link" target="_blank">{{s3response.Location}}</a></li>
-  <li  class="list-group-item"><strong>Bucket Name:</strong> &nbsp; {{s3response.Bucket}} </li>
+  <li class="list-group-item"><strong>S3 URL:</strong> &nbsp;<a href="{{locationUrl}}" class="btn btn-link" target="_blank">{{locationUrl}}</a></li>
+  <li  class="list-group-item"><strong>Bucket Name:</strong> &nbsp; {{serviceBucketName}} </li>
   
 </ul>
 
