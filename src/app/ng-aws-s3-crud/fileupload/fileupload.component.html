@@ -1,14 +1,34 @@
+<form [formGroup]="awsBucketForm" >
+    <div class="form-group">
+        <label for="aws_region"  class="control-label">Region:</label>
+        <input type="text" class="form-control" id="aws_region" placeholder="Enter AWS Region" formControlName="awsRegion" />
+      </div>
+    <div class="form-group">
+      <label for="bucketName"  class="control-label">Bucket Name: </label>
+      <input type="text" class="form-control" id="bucketName" placeholder="Enter Bucket Name" formControlName="bucketName" />
+    </div>
+   
+    <div class="form-group">
+        <label for="aws_cognito_identity_pool" class="control-label">AWS Cognito Indentity Pool:</label>
+        <input type="text" class="form-control" id="aws_cognito_identity_pool" placeholder="Enter Cognito Identity Pool Id#" formControlName="identityPoolId" />
+      </div>
+  </form>
+
+
+
 <label class="btn btn-default">
-  <input type="file" (change)="selectFile($event)" class="d-none" #fileInput>
+  <input hidden type="file" (change)="selectFile($event)" class="d-none" #fileInput>
 </label>
 <div>
     
-<button class="btn btn-primary" [disabled]="showSummary" (click)="triggerFileUpload()"><i class="fa fa-spinner fa-spin"[hidden]="!fileuploading"> </i>Upload file to S3</button>
-<button class="btn btn-warning float-right"  (click)="resetFileUpload()">Clear</button>
-
+<button class="btn btn-primary" [disabled]="showSummary" (click)="fileInput.click()"><i class="fa fa-spinner fa-spin"[hidden]="!fileuploading"> </i>Upload file to S3</button>
 <button class="btn btn-primary "  (click)="listAllFiles()"><i class="fa fa-spinner fa-spin"[hidden]="!listLoading"></i>
   List All file in S3 Bucket </button>
+<button class="btn btn-warning float-right"  (click)="resetFileUpload()">Clear</button>
 </div>
+ 
+
+
 <div *ngIf="showSummary">
 <ul class="list-group well">
   <li class="list-group-item"><strong>File Name:</strong> &nbsp;{{fileName}} </li>

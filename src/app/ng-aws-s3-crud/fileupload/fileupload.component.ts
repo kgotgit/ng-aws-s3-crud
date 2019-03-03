@@ -1,4 +1,5 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit,ViewChild, Input } from '@angular/core';
+import { FormGroup,FormControl} from '@angular/forms';
 import * as AWS from 'aws-sdk';
 import { callbackify } from 'util';
 import { nextTick } from 'q';
@@ -12,9 +13,16 @@ import { nextTick } from 'q';
 export class FileuploadComponent implements OnInit {
 
   showSummary:boolean=false;
+  
   @ViewChild("fileInput") nativeFile;
-  s3url:string="";
   bucketName:string="";
+  awsRegion:string="";
+  identityPoolId:string="";
+  awsBucketForm: FormGroup;
+
+
+
+  s3url:string="";
   fileUploadStaus:string="";
   fileName:string="";
   s3response:any=null;
@@ -22,11 +30,21 @@ export class FileuploadComponent implements OnInit {
   listObjects=false;
   listLoading:boolean=false;
   fileuploading:boolean=false;
+  
 
 
   constructor() { }
 
   ngOnInit() {
+    this.awsBucketForm=this.createBucketForm();
+  }
+
+  createBucketForm(){
+    return new FormGroup({
+      awsRegion:new FormControl(""), 
+      bucketName:new FormControl(""),
+      identityPoolId:new FormControl("")
+        });
   }
 
 
@@ -38,80 +56,76 @@ export class FileuploadComponent implements OnInit {
   this.fileName="";
   this.showSummary=false;
   this.listObjects=false;
-      this.allfileslist=[];
+  this.allfileslist=[];
+  this.awsBucketForm=this.createBucketForm();
   }
-  triggerFileUpload(){
-    this.nativeFile.nativeElement.click();
-  }
+ 
 
+  //Service to save files to s3 bucket
   selectFile(fileInput:any){
     this.fileuploading=true;
+    this.awsBucketForm.value
     const AWSService = AWS;
-    const region = '<your bucket region>';
-    const bucketName = '<bucket Name>';
-    const IdentityPoolId = '<identity pool id>';
     const file = fileInput.target.files[0];
     this.fileName=file.name;
     
-  //Configures the AWS service and initial authorization
+  
     AWSService.config.update({
-      region: region,
+      region: this.awsBucketForm.value.awsRegion,
       credentials: new AWSService.CognitoIdentityCredentials({
-        IdentityPoolId: IdentityPoolId
+        IdentityPoolId: this.awsBucketForm.value.identityPoolId
       }),
       
     });
   
-  //adds the S3 service, make sure the api version and bucket are correct
+  
     const s3 = new AWSService.S3({
       apiVersion: '2006-03-01',
-      params: { Bucket: bucketName}
+      params: { Bucket: this.awsBucketForm.value.bucketName}
     });
   
-  //I store this in a variable for retrieval later
+  
   
     this.showSummary=true;
    
-    s3.upload({ Key: file.name, Bucket: bucketName, Body: file, ACL: 'private'}, (err, data)=> {
-      this.fileuploading=false;
-      if (err) {
-       console.log(err, 'there was an error uploading your file');
-     }else{
-       this.s3response=data;
-      
-     }
-   });
+    s3.upload({ Key: file.name, 
+                Bucket: this.awsBucketForm.value.bucketName, 
+                Body: file, 
+                ACL: 'private'}, 
+                function(err, data) {
+                    this.fileuploading=false;
+                    if (err) {
+                    console.log(err, 'there was an error uploading your file');
+                    }else{
+                    this.s3response=data;
+            }
+      });
   
   }
 
+  //To list all files within a given bucket
   listAllFiles(){
     this.listLoading=true;
     const AWSService = AWS;
-    const region = '<your bucket region>';
-    const bucketName = '<bucket Name>';
-    const IdentityPoolId = '<identity pool id>';
-
-    //Configures the AWS service and initial authorization
+   
     AWSService.config.update({
-      region: region,
+      region: this.awsBucketForm.value.awsRegion,
       credentials: new AWSService.CognitoIdentityCredentials({
-        IdentityPoolId: IdentityPoolId
-      }),
-      
+        IdentityPoolId: this.awsBucketForm.value.identityPoolId
+      })
     });
-    //adds the S3 service, make sure the api version and bucket are correct
     const s3 = new AWSService.S3({
       apiVersion: '2006-03-01',
-      params: { Bucket: bucketName}
+      params: { Bucket: this.awsBucketForm.value.bucketName}
     });
 
-    s3.listObjects({Bucket:bucketName},(err,data)=>{
+    s3.listObjects({Bucket:this.awsBucketForm.value.bucketName},(err,data)=>{
       this.listObjects=true;
       this.allfileslist=data.Contents;
-      console.log(data.Contents);
       this.listLoading=false;
     });
-  }
   
+  }
+
 
 }

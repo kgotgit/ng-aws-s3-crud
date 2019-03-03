@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+
 import { AppComponent } from './app.component';
 import {NgAwsS3CrudModule} from './ng-aws-s3-crud/ng-aws-s3-crud.module';
 
@@ -10,6 +11,7 @@ import {NgAwsS3CrudModule} from './ng-aws-s3-crud/ng-aws-s3-crud.module';
     
   ],
   imports: [
+   
     BrowserModule,
     NgAwsS3CrudModule
   ],
