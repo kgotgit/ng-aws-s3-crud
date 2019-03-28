@@ -87,21 +87,17 @@ export class FileuploadComponent implements OnInit {
   
   
     this.showSummary=true;
-   
-    s3.upload({ Key: file.name, 
+    s3.upload({
+            Key: file.name, 
                 Bucket: this.awsBucketForm.value.bucketName, 
                 Body: file, 
-                ACL: 'private'}, 
-                function(err, data) {
-                    this.fileuploading=false;
-                    if (err) {
-                    console.log(err, 'there was an error uploading your file');
-                    }else{
-                    this.locationUrl=data.Location;
-                    this.serviceBucketName=data.Bucket;
-                    this.s3response=data;
-            }
-      });
+                ACL: 'private'
+          },(err,data)=>{
+            this.fileuploading=false;
+            this.locationUrl=data.Location;
+            this.serviceBucketName=data.Bucket;
+            this.s3response=data;
+          });
   
   }
 
