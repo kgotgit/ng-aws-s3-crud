@@ -1,8 +1,8 @@
 import { Component, OnInit,ViewChild, Input } from '@angular/core';
 import { FormGroup,FormControl} from '@angular/forms';
 import * as AWS from 'aws-sdk';
-import { callbackify } from 'util';
-import { nextTick } from 'q';
+
+
 
 
 @Component({
